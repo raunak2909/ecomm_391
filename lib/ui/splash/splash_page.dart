@@ -16,7 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(Duration(seconds:2),(){
       _checkStatus();
-
     });
   }
   Future<void>_checkStatus()async{

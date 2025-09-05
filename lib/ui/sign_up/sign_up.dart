@@ -1,6 +1,8 @@
-
+import 'package:ecomm_391/ui/bloc/user/user_bloc.dart';
+import 'package:ecomm_391/ui/bloc/user/user_event.dart';
+import 'package:ecomm_391/ui/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,6 +19,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   void dispose() {
     fullNameController.dispose();
@@ -27,7 +31,6 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +38,18 @@ class _SignupScreenState extends State<SignupScreen> {
       body: Stack(
         children: [
           Container(
+            padding: EdgeInsets.only(left: 21, top: 70),
+            width: double.infinity,
+            height: double.infinity,
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios),
+              ),
+            ),
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/bg.png"),
@@ -78,41 +93,125 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       const Text(
                         "Create Account",
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
                         controller: fullNameController,
-                        decoration: const InputDecoration(labelText: "Full Name"),
-                        validator: (v) => v!.isEmpty ? "Please enter your full name" : null,
+                        decoration: const InputDecoration(
+                          labelText: "Full Name",
+                        ),
+                        validator: (v) =>
+                            v!.isEmpty ? "Please enter your full name" : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: emailController,
-                        decoration: const InputDecoration(labelText: "Email Address"),
+                        decoration: const InputDecoration(
+                          labelText: "Email Address",
+                        ),
                         keyboardType: TextInputType.emailAddress,
-                        validator: (v) => !v!.contains("@") ? "Invalid email" : null,
+                        validator: (v) =>
+                            !v!.contains("@") ? "Invalid email" : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: phoneController,
-                        decoration: const InputDecoration(labelText: "Phone Number"),
+                        decoration: const InputDecoration(
+                          labelText: "Phone Number",
+                        ),
                         keyboardType: TextInputType.phone,
-                        validator: (v) => v!.length < 10 ? "Enter valid phone number" : null,
+                        validator: (v) =>
+                            v!.length < 10 ? "Enter valid phone number" : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: passwordController,
-                        decoration: const InputDecoration(labelText: "Password"),
+                        decoration: const InputDecoration(
+                          labelText: "Password",
+                        ),
                         obscureText: true,
-                        validator: (v) => v!.length < 6 ? "Password must be 6+ characters" : null,
+                        validator: (v) => v!.length < 6
+                            ? "Password must be 6+ characters"
+                            : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: confirmPasswordController,
-                        decoration: const InputDecoration(labelText: "Confirm Password"),
+                        decoration: const InputDecoration(
+                          labelText: "Confirm Password",
+                        ),
                         obscureText: true,
-                        validator: (v) => v != passwordController.text ? "Passwords do not match" : null,
+                        validator: (v) => v != passwordController.text
+                            ? "Passwords do not match"
+                            : null,
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: BlocConsumer<UserBloc, UserState>(
+                          listener: (_, state) {
+                            if (state is UserLoadingState) {
+                              isLoading = true;
+                            }
+
+                            if (state is UserFailureState) {
+                              isLoading = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(state.errorMsg), backgroundColor: Colors.red,),
+                              );
+                            }
+
+                            if (state is UserSuccessState) {
+                              isLoading = false;
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("User Registered successfully!!"), backgroundColor: Colors.green,),
+                              );
+                            }
+                          },
+                          builder: (_, state) {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                if(_formKey.currentState!.validate()){
+                                  String name = fullNameController.text;
+                                  String email = emailController.text;
+                                  String mobNo = phoneController.text;
+                                  String pass = passwordController.text;
+
+                                  context.read<UserBloc>().add(
+                                    RegisterUserEvent(
+                                      name: name,
+                                      email: email,
+                                      mobNo: mobNo,
+                                      pass: pass,
+                                    ),
+                                  );
+                                }
+                              },
+                              child: isLoading ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                    child: CircularProgressIndicator( color: Colors.white,),
+                                  ),
+                                  SizedBox(
+                                    width: 11,
+                                  ),
+                                  Text("Registering..")
+                                ],
+                              ) : Text('Register'),
+                            );
+                          },
+                        ),
                       ),
                       const SizedBox(height: 20),
                     ],
