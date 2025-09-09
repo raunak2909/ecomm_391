@@ -13,6 +13,7 @@ class UserRepository {
       return await apiHelper.postAPI(
         url: AppUrls.loginUrl,
         mBody: {"email": email, "password": pass},
+        isAuth: true
       );
     } catch (e) {
       rethrow;
@@ -34,6 +35,7 @@ class UserRepository {
           "mobile_number": mobNo,
           "password": pass,
         },
+        isAuth: true
       );
     } catch (e) {
       rethrow;

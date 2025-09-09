@@ -2,6 +2,7 @@ import 'package:ecomm_391/data/remote/repository/user_repo.dart';
 import 'package:ecomm_391/ui/bloc/user/user_event.dart';
 import 'package:ecomm_391/ui/bloc/user/user_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserRepository userRepository;
@@ -29,6 +30,26 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserFailureState(errorMsg: e.toString()));
       }
     });
-    on<LoginUserEvent>((event, emit) {});
+    on<LoginUserEvent>((event, emit) async{
+      emit(UserLoadingState());
+
+      try{
+
+        dynamic res = await userRepository.loginUser(email: event.email, pass: event.pass);
+        if(res["status"]){
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("token", res["tokan"]);
+
+          emit(UserSuccessState());
+        } else {
+          emit(UserFailureState(errorMsg: res["message"]));
+        }
+
+
+      } catch(e){
+        emit(UserFailureState(errorMsg: e.toString()));
+      }
+
+    });
   }
 }

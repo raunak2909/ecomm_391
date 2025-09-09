@@ -3,4 +3,8 @@ class AppUrls{
 
   static const String loginUrl = "${baseUrl}user/login";
   static const String registerUrl = "${baseUrl}user/registration";
+
+  static const String getProductsUrl = "${baseUrl}products";
+
+
 }

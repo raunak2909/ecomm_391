@@ -27,7 +27,7 @@ class UiButtonHelper{
         ));
   }
 
-  CustomButtonFlex({required VoidCallback callback, required String buttonName}){
+  Widget CustomButtonFlex({required VoidCallback callback, required String buttonName}){
     return SizedBox(
       height: 45,
       width: double.infinity,
@@ -38,7 +38,7 @@ class UiButtonHelper{
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.orange,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            //padding: const EdgeInsets.symmetric(vertical: 14),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
