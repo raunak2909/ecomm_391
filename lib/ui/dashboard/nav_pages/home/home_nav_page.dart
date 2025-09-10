@@ -1,7 +1,9 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecomm_391/data/remote/model/product_model.dart';
 import 'package:ecomm_391/ui/bloc/product/product_bloc.dart';
 import 'package:ecomm_391/ui/bloc/product/product_event.dart';
 import 'package:ecomm_391/ui/bloc/product/product_state.dart';
+import 'package:ecomm_391/ui/custom_widgets/app_color_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,7 +57,7 @@ class _HomeState extends State<HomeNavPage> {
     "https://static.vecteezy.com/system/resources/previews/008/601/839/non_2x/online-shopping-background-design-free-vector.jpg"
     ),
     Offer(imageUrl:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBcBC225zFGTXbsgZ_x8I0iy-4jjw0jC9q2g&s"
+    "https://c7.alamy.com/comp/2BWGH1Y/hot-sale-special-offer-banner-2BWGH1Y.jpg"
     ),
 
   ];
@@ -125,41 +127,27 @@ class _HomeState extends State<HomeNavPage> {
   /// Builds the horizontally scrolling offer banner
   Widget _buildOfferCarousel() {
     return SizedBox(
+      width: double.infinity,
       height: 180,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            itemCount: _offers.length,
-            itemBuilder: (context, index) {
-              final offer = _offers[index];
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  offer.imageUrl,
-                  fit: BoxFit.cover,
-                ),
-              );
-            },
-          ),
-
-          /*Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: _offers.length,
-              effect: WormEffect(
-                dotColor: Colors.grey.shade400,
-                activeDotColor: Colors.white,
-                dotHeight: 8,
-                dotWidth: 8,
-                spacing: 10,
+      child: CarouselSlider.builder(
+          itemCount: _offers.length,
+          itemBuilder: (_, index, __){
+            return Container(
+              margin: EdgeInsets.only(left: 11),
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(image: NetworkImage(_offers[index].imageUrl), fit: BoxFit.cover)
               ),
-            ),
-          ),*/
-        ],
-      ),
+            );
+          },
+          options: CarouselOptions(
+            autoPlay: true,
+            viewportFraction: 1,
+            autoPlayInterval: Duration(seconds: 2),
+            autoPlayCurve: Curves.fastOutSlowIn
+          )),
     );
   }
 
@@ -236,9 +224,7 @@ class _HomeState extends State<HomeNavPage> {
             itemBuilder: (context, index) {
               final product = state.mProducts[index];
               return InkWell(
-                  onTap: () {
-                    //Navigator.pushNamed(context, AppRoutes.productDetails);
-                  },
+
                   child: _buildProductCard(product)); // Use a helper for the card UI
             },
           );
@@ -252,72 +238,91 @@ class _HomeState extends State<HomeNavPage> {
 
   /// Builds a single product card.
   Widget _buildProductCard(ProductModel product) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Stack(
             children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.network(
-                    product.image ?? "",
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      child: Image.network(
+                        product.image ?? "",
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      product.name ?? "No Name",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "\$${product.price}",
+                          style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                        ),
+                        AppColorList(mColors: [
+                          Colors.black,
+                          Colors.blue,
+                          Colors.orange,
+                          Colors.red,
+                          Colors.green,
+                          Colors.purple,
+                          Colors.yellow,
+                        ], selectedColorIndex: 0, size: constraints.maxWidth*0.12,)
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
+              // The favorite button is now interactive.
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(12),
+                      bottomLeft: Radius.circular(8),
+                    ),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      /*setState(() {
+                        product.isFavorite = !product.isFavorite;
+                      });*/
+                    },
+                    icon: Icon(CupertinoIcons.heart,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  product.name ?? "No Name",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  "\$${product.price}",
-                  style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 8),
             ],
           ),
-          // The favorite button is now interactive.
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(12),
-                  bottomLeft: Radius.circular(8),
-                ),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  /*setState(() {
-                    product.isFavorite = !product.isFavorite;
-                  });*/
-                },
-                icon: Icon(CupertinoIcons.heart,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 }

@@ -24,10 +24,55 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: mNavPages[selectedNavIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          elevation: 11,
-          iconSize: 25,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        onPressed: (){
+          selectedNavIndex=2;
+          setState(() {
+
+          });
+      }, child: Icon(Icons.home, color: Colors.white),),
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 5,
+        shape: CircularNotchedRectangle(),
+          elevation: 16,
+         child: Row(
+           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+           children: [
+             IconButton(onPressed: (){
+               selectedNavIndex=0;
+               setState(() {
+
+               });
+             }, icon: Icon(selectedNavIndex==0 ? Icons.category : Icons.category_outlined, color: selectedNavIndex==0 ? Colors.orange : Colors.grey,)),
+             IconButton(onPressed: (){
+               selectedNavIndex=1;
+               setState(() {
+
+               });
+             }, icon: Icon(selectedNavIndex==1 ? Icons.favorite : Icons.favorite_border, color: selectedNavIndex==1 ? Colors.orange : Colors.grey,)),
+             SizedBox(width: 50,),
+             IconButton(onPressed: (){
+               selectedNavIndex=3;
+               setState(() {
+
+               });
+             }, icon: Icon(Icons.shopping_cart_outlined, color: selectedNavIndex==3 ? Colors.orange : Colors.grey,)),
+             IconButton(onPressed: (){
+               selectedNavIndex=4;
+               setState(() {
+
+               });
+             }, icon: Icon(Icons.person_outline, color: selectedNavIndex==4 ? Colors.orange : Colors.grey,)),
+           ],
+         ),
+         /* iconSize: 25,
           showSelectedLabels: false,
           currentIndex: selectedNavIndex,
           selectedItemColor: Colors.orange,
@@ -44,11 +89,10 @@ class _DashboardPageState extends State<DashboardPage> {
           items: [
             BottomNavigationBarItem(activeIcon: Icon(Icons.category_outlined),label: "Category",icon: Icon(Icons.category),),
             BottomNavigationBarItem(activeIcon: Icon(Icons.favorite_border_outlined),label: "Favorite",icon: Icon(Icons.favorite_border),),
-            BottomNavigationBarItem(activeIcon: Icon(Icons.home),label: "Home",icon: Icon(Icons.home_outlined),),
             BottomNavigationBarItem(activeIcon: Icon(Icons.shopping_cart_rounded),label: "Home",icon: Icon(Icons.shopping_cart),),
             BottomNavigationBarItem(icon: Icon(Icons.person),label: "Profile"),
 
-          ]
+          ]*/
 
       ),
 
