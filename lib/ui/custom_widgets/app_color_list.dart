@@ -4,8 +4,9 @@ class AppColorList extends StatefulWidget {
   List<Color> mColors;
   int selectedColorIndex;
   double size;
+  bool fullWidth;
 
-  AppColorList({required this.mColors, required this.selectedColorIndex, required this.size});
+  AppColorList({required this.mColors, required this.selectedColorIndex, required this.size, this.fullWidth = true});
 
   @override
   State<AppColorList> createState() => _AppColorListState();
@@ -16,7 +17,7 @@ class _AppColorListState extends State<AppColorList> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: widget.size,
-      child: widget.mColors.length>4 ?  Row(
+      child: widget.fullWidth ? _myList(length: widget.mColors.length) : widget.mColors.length>4 ?  Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           _myList(length: 3),

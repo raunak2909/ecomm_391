@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecomm_391/data/remote/model/product_model.dart';
+import 'package:ecomm_391/domain/constants/app_routes.dart';
 import 'package:ecomm_391/ui/bloc/product/product_bloc.dart';
 import 'package:ecomm_391/ui/bloc/product/product_event.dart';
 import 'package:ecomm_391/ui/bloc/product/product_state.dart';
@@ -224,7 +225,9 @@ class _HomeState extends State<HomeNavPage> {
             itemBuilder: (context, index) {
               final product = state.mProducts[index];
               return InkWell(
-
+                onTap: (){
+                  Navigator.pushNamed(context, AppRoutes.productDetail, arguments: product);
+                },
                   child: _buildProductCard(product)); // Use a helper for the card UI
             },
           );
@@ -286,7 +289,7 @@ class _HomeState extends State<HomeNavPage> {
                           Colors.green,
                           Colors.purple,
                           Colors.yellow,
-                        ], selectedColorIndex: 0, size: constraints.maxWidth*0.12,)
+                        ], selectedColorIndex: 0, size: constraints.maxWidth*0.12, fullWidth: false)
                       ],
                     ),
                   ),

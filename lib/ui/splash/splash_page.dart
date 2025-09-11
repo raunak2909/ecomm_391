@@ -27,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     String nextPage = AppRoutes.login;
 
     if(token.isNotEmpty){
+      print("token : $token");
       nextPage = AppRoutes.dashboard;
     }
 

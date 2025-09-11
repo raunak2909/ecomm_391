@@ -5,6 +5,7 @@ class AppUrls{
   static const String registerUrl = "${baseUrl}user/registration";
 
   static const String getProductsUrl = "${baseUrl}products";
+  static const String addToCartUrl = "${baseUrl}add-to-cart";
 
 
 }
