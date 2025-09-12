@@ -6,6 +6,7 @@ class AppUrls{
 
   static const String getProductsUrl = "${baseUrl}products";
   static const String addToCartUrl = "${baseUrl}add-to-cart";
+  static const String fetchCartUrl = "${baseUrl}product/view-cart";
 
 
 }

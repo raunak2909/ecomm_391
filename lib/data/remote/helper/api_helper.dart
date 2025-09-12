@@ -5,7 +5,34 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiHelper {
-  getAPI() {}
+  Future<dynamic> getAPI({
+    required String url,
+    Map<String, String>? mHeaders,
+    bool isAuth = false,
+  }) async{
+    if (!isAuth) {
+      mHeaders ??= {};
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString("token") ?? "";
+      mHeaders["Authorization"] = "Bearer $token";
+    }
+
+    try {
+      var response = await http.get(
+        Uri.parse(url),
+        headers: mHeaders,
+      );
+
+      print("res : ${response.body}");
+      return parsedResponse(response);
+    } on SocketException catch (e) {
+      throw NoInternetException(desc: "Not connected to network, ${e.message}");
+    } catch (e) {
+      rethrow;
+    }
+
+  }
 
   Future<dynamic> postAPI({
     required String url,
@@ -13,43 +40,41 @@ class ApiHelper {
     Map<String, dynamic>? mBody,
     bool isAuth = false,
   }) async {
-
-    if(!isAuth){
-
+    if (!isAuth) {
       mHeaders ??= {};
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String token = prefs.getString("token") ?? "";
       mHeaders["Authorization"] = "Bearer $token";
-
     }
 
     try {
-      var response = await http.post(Uri.parse(url),
-          body: mBody != null ? jsonEncode(mBody) : null, headers: mHeaders);
+      var response = await http.post(
+        Uri.parse(url),
+        body: mBody != null ? jsonEncode(mBody) : null,
+        headers: mHeaders,
+      );
 
       print("res : ${response.body}");
       return parsedResponse(response);
-      
     } on SocketException catch (e) {
       throw NoInternetException(desc: "Not connected to network, ${e.message}");
     } catch (e) {
       rethrow;
     }
   }
-  
-  dynamic parsedResponse(http.Response res){
+
+  dynamic parsedResponse(http.Response res) {
     /*if(res.statusCode==200){
       
     } else if(res.statusCode==300){
       
     }*/
-    
-    switch(res.statusCode){
-      
+
+    switch (res.statusCode) {
       case 200:
         return jsonDecode(res.body);
-        
+
       case 300:
         throw FetchDataException(desc: res.body);
 
@@ -59,8 +84,6 @@ class ApiHelper {
       case 500:
       default:
         throw ServerException(desc: res.body);
-
     }
-    
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../cart/cart_page.dart';
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -18,7 +20,7 @@ class _DashboardPageState extends State<DashboardPage> {
     HomeNavPage(),
     HomeNavPage(),
     HomeNavPage(),
-    HomeNavPage(),
+    CartPage(),
     HomeNavPage(),
   ];
   @override

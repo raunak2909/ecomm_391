@@ -6,3 +6,4 @@ class AddToCartEvent extends CartEvent {
 }
 
 ///fetchCart
+class FetchCartEvent extends CartEvent{}

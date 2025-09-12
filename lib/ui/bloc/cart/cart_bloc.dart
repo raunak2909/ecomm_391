@@ -1,3 +1,4 @@
+import 'package:ecomm_391/data/remote/model/cart_model.dart';
 import 'package:ecomm_391/data/remote/repository/cart_repo.dart';
 import 'package:ecomm_391/ui/bloc/cart/cart_event.dart';
 import 'package:ecomm_391/ui/bloc/cart/cart_state.dart';
@@ -22,6 +23,25 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       } catch (e) {
         emit(CartFailureState(errorMsg: e.toString()));
       }
+    });
+
+    on<FetchCartEvent>((event, emit) async{
+
+      emit(CartLoadingState());
+
+      try{
+        dynamic res = await cartRepository.fetchCart();
+
+        if(res["status"] == "true" || res["status"]){
+          emit(CartSuccessState(cartList: CartDataModel.fromJson(res).data));
+        } else {
+          emit(CartFailureState(errorMsg: res["message"]));
+        }
+
+      } catch (e){
+        emit(CartFailureState(errorMsg: e.toString()));
+      }
+
     });
   }
 }

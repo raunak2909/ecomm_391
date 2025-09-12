@@ -20,4 +20,11 @@ class CartRepository{
   }
 
   ///fetchCart
+  fetchCart() async{
+    try{
+      return await apiHelper.getAPI(url: AppUrls.fetchCartUrl);
+    } catch(e){
+      rethrow;
+    }
+  }
 }
